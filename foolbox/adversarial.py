@@ -5,7 +5,6 @@ Provides a class that represents an adversarial example.
 
 import numpy as np
 import numbers
-from scipy.misc import imread, imresize
 
 from .distances import Distance
 from .distances import MSE
@@ -299,12 +298,11 @@ class Adversarial(object):
             Controls if the bounds for the pixel values should be checked.
 
         """
-        image_ = imresize(image, (64,64,3))
-        in_bounds = self.in_bounds(image_)
+        in_bounds = self.in_bounds(image)
         assert not strict or in_bounds
 
         self._total_prediction_calls += 1
-        predictions = self.__model.predictions(image_)
+        predictions = self.__model.predictions(image)
         is_adversarial, is_best, distance = self.__is_adversarial(
             image, predictions, in_bounds)
 
