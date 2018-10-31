@@ -47,7 +47,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
 
     def _run(self, a, binary_search, mul_scale,
              epsilon, stepsize, iterations,
-             random_start, return_early, dim_resize):
+             random_start, return_early):
         if not a.has_gradient():
             warnings.warn('applied gradient-based attack to model that'
                           ' does not provide gradients')
@@ -66,14 +66,14 @@ class IterativeProjectedGradientBaseAttack(Attack):
                 m = float(mul_scale)
             return self._run_binary_search(
                 a, epsilon, stepsize, iterations,
-                random_start, targeted, class_, return_early, dim_resize, k=k, m=m)
+                random_start, targeted, class_, return_early, k=k, m=m)
         else:
             return self._run_one(
                 a, epsilon, stepsize, iterations,
-                random_start, targeted, class_, return_early, dim_resize)
+                random_start, targeted, class_, return_early)
 
     def _run_binary_search(self, a, epsilon, stepsize, iterations,
-                           random_start, targeted, class_, return_early, dim_resize, k, m):
+                           random_start, targeted, class_, return_early, k, m):
 
         factor = stepsize / epsilon
 
@@ -81,7 +81,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
             stepsize = factor * epsilon
             return self._run_one(
                 a, epsilon, stepsize, iterations,
-                random_start, targeted, class_, return_early, dim_resize)
+                random_start, targeted, class_, return_early)
         k1 = 0
         for i in range(k):
             k1 += 1
@@ -108,7 +108,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
                     logging.info('not successful for eps = {}'.format(epsilon))
 
     def _run_one(self, a, epsilon, stepsize, iterations,
-                 random_start, targeted, class_, return_early, dim_resize):
+                 random_start, targeted, class_, return_early):
         min_, max_ = a.bounds()
         s = max_ - min_
 
@@ -429,8 +429,7 @@ class L2BasicIterativeAttack(
                  stepsize=0.05,
                  iterations=10,
                  random_start=False,
-                 return_early=True,
-                 dim_resize=64):
+                 return_early=True):
 
         """Simple iterative gradient-based attack known as
         Basic Iterative Method, Projected Gradient Descent or FGSM^k.
@@ -480,7 +479,7 @@ class L2BasicIterativeAttack(
 
         self._run(a, binary_search, mul_scale,
                   epsilon, stepsize, iterations,
-                  random_start, return_early, dim_resize)
+                  random_start, return_early)
 
 
 class ProjectedGradientDescentAttack(
