@@ -79,8 +79,9 @@ class IterativeProjectedGradientBaseAttack(Attack):
             return self._run_one(
                 a, epsilon, stepsize, iterations,
                 random_start, targeted, class_, return_early)
-
+        k1 = 0
         for i in range(k):
+            k1 += 1
             if try_epsilon(epsilon):
                 logging.info('successful for eps = {}'.format(epsilon))
                 break
@@ -89,18 +90,19 @@ class IterativeProjectedGradientBaseAttack(Attack):
         else:
             logging.warning('exponential search failed')
             return
+        k2 = k - k1
+        if k2:
+            bad = 0
+            good = epsilon
 
-        bad = 0
-        good = epsilon
-
-        for i in range(k):
-            epsilon = (good + bad) / 2
-            if try_epsilon(epsilon):
-                good = epsilon
-                logging.info('successful for eps = {}'.format(epsilon))
-            else:
-                bad = epsilon
-                logging.info('not successful for eps = {}'.format(epsilon))
+            for i in range(k2):
+                epsilon = (good + bad) / 2
+                if try_epsilon(epsilon):
+                    good = epsilon
+                    logging.info('successful for eps = {}'.format(epsilon))
+                else:
+                    bad = epsilon
+                    logging.info('not successful for eps = {}'.format(epsilon))
 
     def _run_one(self, a, epsilon, stepsize, iterations,
                  random_start, targeted, class_, return_early):
