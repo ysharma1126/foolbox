@@ -299,12 +299,12 @@ class Adversarial(object):
             Controls if the bounds for the pixel values should be checked.
 
         """
-        image = imresize(image, (64,64,3))
-        in_bounds = self.in_bounds(image)
+        image_ = imresize(image, (64,64,3))
+        in_bounds = self.in_bounds(image_)
         assert not strict or in_bounds
 
         self._total_prediction_calls += 1
-        predictions = self.__model.predictions(image)
+        predictions = self.__model.predictions(image_)
         is_adversarial, is_best, distance = self.__is_adversarial(
             image, predictions, in_bounds)
 
