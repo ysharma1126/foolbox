@@ -1,6 +1,5 @@
 from __future__ import division
 import numpy as np
-from scipy.misc import imread, imresize
 from abc import abstractmethod
 import logging
 import warnings
@@ -143,7 +142,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
 
             x = np.clip(x, min_, max_)
 
-            logits, is_adversarial = a.predictions(imresize(x, (64,64,3)))
+            logits, is_adversarial = a.predictions(x)
             if logging.getLogger().isEnabledFor(logging.DEBUG):
                 if targeted:
                     ce = crossentropy(a.original_class, logits)
