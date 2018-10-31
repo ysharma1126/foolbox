@@ -44,7 +44,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
             class_ = a.original_class
         return targeted, class_
 
-    def _run(self, a, binary_search,
+    def _run(self, a, binary_search, mul_scale,
              epsilon, stepsize, iterations,
              random_start, return_early):
         if not a.has_gradient():
@@ -59,18 +59,20 @@ class IterativeProjectedGradientBaseAttack(Attack):
         if binary_search:
             if isinstance(binary_search, bool):
                 k = 20
+                mul_scale = 1.5
             else:
                 k = int(binary_search)
+                m = float(mul_scale)
             return self._run_binary_search(
                 a, epsilon, stepsize, iterations,
-                random_start, targeted, class_, return_early, k=k)
+                random_start, targeted, class_, return_early, k=k, m=m)
         else:
             return self._run_one(
                 a, epsilon, stepsize, iterations,
                 random_start, targeted, class_, return_early)
 
     def _run_binary_search(self, a, epsilon, stepsize, iterations,
-                           random_start, targeted, class_, return_early, k):
+                           random_start, targeted, class_, return_early, k, m):
 
         factor = stepsize / epsilon
 
@@ -86,7 +88,7 @@ class IterativeProjectedGradientBaseAttack(Attack):
                 logging.info('successful for eps = {}'.format(epsilon))
                 break
             logging.info('not successful for eps = {}'.format(epsilon))
-            epsilon = epsilon * 1.5
+            epsilon = epsilon * m
         else:
             logging.warning('exponential search failed')
             return
