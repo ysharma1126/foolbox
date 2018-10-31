@@ -423,6 +423,7 @@ class L2BasicIterativeAttack(
     @call_decorator
     def __call__(self, input_or_adv, label=None, unpack=True,
                  binary_search=True,
+                 mul_scale=True,
                  epsilon=0.3,
                  stepsize=0.05,
                  iterations=10,
@@ -475,7 +476,7 @@ class L2BasicIterativeAttack(
 
         assert epsilon > 0
 
-        self._run(a, binary_search,
+        self._run(a, binary_search, mul_scale,
                   epsilon, stepsize, iterations,
                   random_start, return_early)
 
